@@ -24,8 +24,10 @@ function parseStock($db,$xml,$viid,$parsepoint){
             if ($tagStockEntry->children($ns['bs'])->previous) {$cmdstr.="'".$tagStockEntry->children($ns['bs'])->previous."','";} else {$cmdstr.="null,'";}
             $cmdstr.=$tagStockEntry->children($ns['vd'])->entryNumber."',";
             $cmdstr.=$tagStockEntry->children($ns['vd'])->batch->volume.",'";            
+            $cmdstr.=$tagStockEntry->children($ns['vd'])->vetDocument->children($ns['bs'])->uuid."','";            
             $cmdstr.=$tagVetDocument->children($ns['bs'])->uuid."','";
-            $cmdstr.=$tagVetDocument->children($ns['vd'])->vetDStatus."')";
+            $cmdstr.=$tagVetDocument->children($ns['vd'])->vetDStatus."','";
+            $cmdstr.=(string)$tagVetDocument->attributes()->qualifier."')";            
         //throw new Exception($cmdstr);
         $vi_row=$db->selectWithParams($cmdstr,null,null);  
         }
