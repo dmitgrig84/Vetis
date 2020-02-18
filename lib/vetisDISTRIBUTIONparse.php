@@ -1,6 +1,7 @@
 <?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
 
-function parseDistribution($db,$xml,$viid,$parsepoint){         
+function parseDistribution($db,$xml,$viid,$parsepoint){
+    if (parseHB($xml)){
     $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
     $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
     $xml->registerXPathNamespace('v2', 'http://api.vetrf.ru/schema/cdm/registry/ws-definitions/v2');
@@ -11,8 +12,14 @@ function parseDistribution($db,$xml,$viid,$parsepoint){
         throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');
     else    
         foreach ($substr[0]->children($ns['dt']) as $out_ns){        
-            $bstag=$out_ns->children($ns['bs']);
-            $dttag=$out_ns->children($ns['dt']);
+            if ($out_ns->children($ns['bs'])){
+                $bstag=$out_ns->children($ns['bs']);
+                $dttag=$out_ns->children($ns['dt']);
+            }
+            else{
+                $bstag=$out_ns->children($ns['dt'])->enterprise->children($ns['bs']);
+                $dttag=$out_ns->children($ns['dt'])->enterprise->children($ns['dt']);
+            }
             
             $cmdstr="execute procedure vetis_distributionresult(".$viid.",'";
             $cmdstr.=$bstag->{'uuid'}."','";
@@ -27,4 +34,5 @@ function parseDistribution($db,$xml,$viid,$parsepoint){
             //var_dump($cmdstr);
             $vi_row=$db->selectWithParams($cmdstr,null,null);             
         }
+    }
 }

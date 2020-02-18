@@ -29,7 +29,7 @@ function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$error){
             case 'VETISSTOCK':
                 include 'vetisSTOCKparse.php';
                 parseStock($db,$XML,$viid,$parsepoint);        
-                break;            
+                break;                                
             default :
                 throw new Exception('Не задана таблица для парсинга');        
         }     
@@ -60,6 +60,24 @@ function parseSAR($db,$xml,$viid){
                 return true;
             default :
                 throw new Exception('Не известный статус ответа ВЕТИС.'); 
+        }
+    }
+}
+
+function parseHB($xml){         
+    $xml->registerXPathNamespace('soapenv', 'http://schemas.xmlsoap.org/soap/envelope/');    
+    
+    $ns = $xml->getNamespaces(true);
+    $substr=$xml->xpath('soapenv:Fault');       
+    if (count($substr)==0){
+        return true;
+    }
+    else{
+        if ($substr[0]->detail){
+            throw new Exception($substr[0]->detail->asXML()); 
+        }
+        else { 
+            throw new Exception($substr[0]->asXML()); 
         }
     }
 }
