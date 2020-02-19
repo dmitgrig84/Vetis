@@ -30,6 +30,10 @@ function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$error){
                 include 'vetisSTOCKparse.php';
                 parseStock($db,$XML,$viid,$parsepoint);        
                 break;                                
+            case 'VETISSTOCKLIST':
+                include 'vetisSTOCKparse.php';
+                parseStockList($db,$XML,$viid,$parsepoint);        
+                break;                                            
             default :
                 throw new Exception('Не задана таблица для парсинга');        
         }     
