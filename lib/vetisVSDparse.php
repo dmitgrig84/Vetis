@@ -1,27 +1,18 @@
 <?php  defined('MSD') OR die('Прямой доступ к странице запрещён!');
 
-function parseVSD($db,$xml,$viid,$parsepoint){         
-    $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
-    $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
-    $xml->registerXPathNamespace('vd', 'http://api.vetrf.ru/schema/cdm/mercury/vet-document/v2');
+function parseVSD($db,$xml,$viid,$parsepoint){
+    if (parseSAR($db,$xml,$viid)){        
+        $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
+        $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
+        $xml->registerXPathNamespace('vd', 'http://api.vetrf.ru/schema/cdm/mercury/vet-document/v2');
     
-    $ns = $xml->getNamespaces(true);            
-    $substr=$xml->xpath($parsepoint);
+        $ns = $xml->getNamespaces(true);            
+        $substr=$xml->xpath($parsepoint);
     
-    if (count($substr)==0){
-        $xml->registerXPathNamespace('ap', 'http://api.vetrf.ru/schema/cdm/application');        
-        $substr=$xml->xpath('//ap:application');
-        $ns = $xml->getNamespaces(true);
-        if ((count($substr)<>0)&&($substr[0]->children($ns['ap'])->status=='IN_PROCESS')){
-            throw new Exception('Запрос обрабатывается на сервере ВЕТИС, запросите ответ чуть позже.');
-        }
-        else{
-            throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');
-        } 
-                
-    }
-    else    
-        foreach ($substr[0]->children($ns['vd']) as $out_ns){        
+        if ((int)($substr[0]->attributes()->count)==0)
+            throw new Exception('Отсутствуют записи для обработки.');
+        else
+            foreach ($substr[0]->children($ns['vd']) as $out_ns){        
             $bstag=$out_ns->children($ns['bs']);
             $vdtag=$out_ns->children($ns['vd']);
             $cctag=$vdtag->certifiedConsignment;
@@ -67,5 +58,7 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=")";
             //var_dump($cmdstr);
             $vi_row=$db->selectWithParams($cmdstr,null,null);      
-        }
+            }
+        
+    }
 }

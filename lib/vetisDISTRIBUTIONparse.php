@@ -2,16 +2,16 @@
 
 function parseDistribution($db,$xml,$viid,$parsepoint){
     if (parseHB($xml)){
-    $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
-    $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
-    $xml->registerXPathNamespace('v2', 'http://api.vetrf.ru/schema/cdm/registry/ws-definitions/v2');
-    $ns = $xml->getNamespaces(true);            
-    $substr=$xml->xpath($parsepoint);
+        $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
+        $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
+        $xml->registerXPathNamespace('v2', 'http://api.vetrf.ru/schema/cdm/registry/ws-definitions/v2');
+        $ns = $xml->getNamespaces(true);            
+        $substr=$xml->xpath($parsepoint);
     
-    if (count($substr)==0)
-        throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');
-    else    
-        foreach ($substr[0]->children($ns['dt']) as $out_ns){        
+        if (count($substr)==0)
+            throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');
+        else    
+            foreach ($substr[0]->children($ns['dt']) as $out_ns){        
             if ($out_ns->children($ns['bs'])){
                 $bstag=$out_ns->children($ns['bs']);
                 $dttag=$out_ns->children($ns['dt']);
@@ -33,6 +33,6 @@ function parseDistribution($db,$xml,$viid,$parsepoint){
             $cmdstr.=")";
             //var_dump($cmdstr);
             $vi_row=$db->selectWithParams($cmdstr,null,null);             
-        }
+            }        
     }
 }

@@ -10,14 +10,14 @@ function parseStock($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-    if (count($substr)==0){        
-        throw new Exception('Ошибка: Не верный формат ответа ВЕТИС. Обратитесь к разработчику модуля.');    
-    }
-    else{
-        $tagStockEntry=$substr[0]->children($ns['merc'])->stockEntry;
-        $tagVetDocument=$substr[0]->children($ns['merc'])->vetDocument;
+        if (count($substr)==0){        
+            throw new Exception('Ошибка: Не верный формат ответа ВЕТИС. Обратитесь к разработчику модуля.');    
+        }
+        else{
+            $tagStockEntry=$substr[0]->children($ns['merc'])->stockEntry;
+            $tagVetDocument=$substr[0]->children($ns['merc'])->vetDocument;
         
-        $cmdstr="execute procedure vetis_stockresult(".$viid.",'";
+            $cmdstr="execute procedure vetis_stockresult(".$viid.",'";
             $cmdstr.=$tagStockEntry->children($ns['bs'])->uuid."','";
             $cmdstr.=$tagStockEntry->children($ns['bs'])->guid."','";
             $cmdstr.=$tagStockEntry->children($ns['bs'])->status."',";
@@ -28,9 +28,9 @@ function parseStock($db,$xml,$viid,$parsepoint){
             $cmdstr.=$tagVetDocument->children($ns['bs'])->uuid."','";
             $cmdstr.=$tagVetDocument->children($ns['vd'])->vetDStatus."','";
             $cmdstr.=(string)$tagVetDocument->attributes()->qualifier."')";            
-        //throw new Exception($cmdstr);
-        $vi_row=$db->selectWithParams($cmdstr,null,null);  
-        }
+            //throw new Exception($cmdstr);
+            $vi_row=$db->selectWithParams($cmdstr,null,null);  
+            }
     }
 }
 
@@ -44,8 +44,8 @@ function parseStockList($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-        if (count($substr)==0){        
-            throw new Exception('Ошибка: Не верный формат ответа ВЕТИС. Обратитесь к разработчику модуля.');    
+        if ((int)($substr[0]->attributes()->count)==0){
+            throw new Exception('Отсутствуют записи для обработки.');    
         }
         else{
             foreach ($substr[0]->children($ns['vd']) as $tagStockEntry){                                

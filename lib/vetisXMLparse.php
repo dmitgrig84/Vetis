@@ -72,7 +72,7 @@ function parseHB($xml){
     $xml->registerXPathNamespace('soapenv', 'http://schemas.xmlsoap.org/soap/envelope/');    
     
     $ns = $xml->getNamespaces(true);
-    $substr=$xml->xpath('soapenv:Fault');       
+    $substr=$xml->xpath('//soapenv:Fault');       
     if (count($substr)==0){
         return true;
     }
