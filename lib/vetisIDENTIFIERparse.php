@@ -5,7 +5,7 @@ function parseIdentifier($db,$xml,$viid,$parsepoint){
     $ns = $xml->getNamespaces(true);            
     $substr=$xml->xpath($parsepoint);
     
-    if (count($substr)==0)
+    if (count($substr)==0) //если не нашли точку входа, формат не известен
         throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');
     else{
         $cmdstr="execute procedure vetis_identifierresult(".$viid.",'";

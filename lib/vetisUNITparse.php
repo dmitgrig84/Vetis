@@ -8,7 +8,7 @@ function parseUnit($db,$xml,$viid,$parsepoint){
     $ns = $xml->getNamespaces(true);            
     $substr=$xml->xpath($parsepoint);
     
-    if (count($substr)==0)
+    if (count($substr)==0) //если не нашли точку входа, формат не известен
         throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');
     else    
         foreach ($substr[0]->children($ns['dt']) as $out_ns){        

@@ -10,9 +10,8 @@ function parseStock($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-        if (count($substr)==0){        
-            throw new Exception('Ошибка: Не верный формат ответа ВЕТИС. Обратитесь к разработчику модуля.');    
-        }
+        if (count($substr)==0) //если не нашли точку входа, формат не известен
+            throw new Exception('Ошибка: Не верный формат ответа ВЕТИС. Обратитесь к разработчику модуля.');            
         else{
             $tagStockEntry=$substr[0]->children($ns['merc'])->stockEntry;
             $tagVetDocument=$substr[0]->children($ns['merc'])->vetDocument;
@@ -44,9 +43,10 @@ function parseStockList($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-        if ((int)($substr[0]->attributes()->count)==0){
-            throw new Exception('Отсутствуют записи для обработки.');    
-        }
+        if ((count($substr)==0) || //если не нашли точку входа, формат не известен
+            (($substr[0]->attributes()->count) && //если есть атрибут count
+             ((int)($substr[0]->attributes()->count)==0))) //он равен 0 
+            throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');        
         else{
             foreach ($substr[0]->children($ns['vd']) as $tagStockEntry){                                
                 $cmdstr="execute procedure vetis_stockresult(".$viid.",'";

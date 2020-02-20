@@ -5,12 +5,15 @@ function parseVSD($db,$xml,$viid,$parsepoint){
         $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
         $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
         $xml->registerXPathNamespace('vd', 'http://api.vetrf.ru/schema/cdm/mercury/vet-document/v2');
+        $xml->registerXPathNamespace('gb', 'http://api.vetrf.ru/schema/cdm/mercury/g2b/applications/v2');        
     
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
-    
-        if ((int)($substr[0]->attributes()->count)==0)
-            throw new Exception('Отсутствуют записи для обработки.');
+            
+        if ((count($substr)==0) || //если не нашли точку входа, формат не известен
+            (($substr[0]->attributes()->count) && //если есть атрибут count
+             ((int)($substr[0]->attributes()->count)==0))) //он равен 0 
+            throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');
         else
             foreach ($substr[0]->children($ns['vd']) as $out_ns){        
             $bstag=$out_ns->children($ns['bs']);

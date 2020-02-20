@@ -49,9 +49,8 @@ function parseSAR($db,$xml,$viid){
     $xml->registerXPathNamespace('apl', 'http://api.vetrf.ru/schema/cdm/application');
     $ns = $xml->getNamespaces(true);
     $substr=$xml->xpath('//apl:application');       
-    if (count($substr)==0){
+    if (count($substr)==0) //если не нашли точку входа, формат не известен
         throw new Exception('Ошибка: Не верный формат ответа ВЕТИС. Обратитесь к разработчику модуля.');
-    }
     else{
         //throw new Exception($substr[0]->children($ns['apl'])->status);        
         switch ($substr[0]->status){
@@ -73,9 +72,8 @@ function parseHB($xml){
     
     $ns = $xml->getNamespaces(true);
     $substr=$xml->xpath('//soapenv:Fault');       
-    if (count($substr)==0){
+    if (count($substr)==0) //если не нашли точку входа, значит это не ошибка
         return true;
-    }
     else{
         if ($substr[0]->detail){
             throw new Exception($substr[0]->detail->asXML()); 
