@@ -95,7 +95,7 @@ function vetisSendXML($web,$db,$viid){
                 $up_sql_source="execute procedure vetis_processingresult($vetisidentifierid,:param,1)";
                 $db->updateBlob($up_sql_source,$xml->saveXML());        
 
-                /*$web->connect($row['WSDL'],$row['LOGIN'],$row['PASS']);                
+                $web->connect($row['WSDL'],$row['LOGIN'],$row['PASS']);                
                 $result=$web->request($xml->asXML(),$row['ENDPOINT'],$row['SOAPACTION'],SOAP_1_1);
                 if (!is_null($result)){
                     $up_sql_result="execute procedure vetis_processingresult($vetisidentifierid,:param,5)";
@@ -110,7 +110,7 @@ function vetisSendXML($web,$db,$viid){
                     }
                 } else{
                     array_push($return_result," Ошибка: нет ответа от сервера.");                    
-                }*/
+                }
             }
             catch (Exception $fault) {
                 $up_sql_result="execute procedure vetis_processingresult($vetisidentifierid,:param,-1)";            
