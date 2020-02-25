@@ -41,11 +41,16 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=$batchtag->productItem->children($ns['bs'])->guid."','";
             $cmdstr.=$batchtag->volume."','";
             $cmdstr.=$batchtag->unit->children($ns['bs'])->guid."','";
-            $cmdstr.=$dopfd->year."-".$dopfd->month."-".$dopfd->day." ".$dopfd->hour.":00','";
-            $cmdstr.=$exdfd->year."-".$exdfd->month."-".$exdfd->day." ".$exdfd->hour.":00','";
+            
+            $cmdstr.=$dopfd->year."-".$dopfd->month."-".$dopfd->day;
+            $cmdstr.=($dopfd->hour)?" ".$dopfd->hour.":00','":"','";
+            
+            $cmdstr.=$exdfd->year."-".$exdfd->month."-".$exdfd->day;
+            $cmdstr.=($exdfd->hour)?" ".$exdfd->hour.":00','":"','";
+            
             $cmdstr.=$batchtag->perishable."',";
-            if ($batchtag->origin->productItem) {$cmdstr.="'".$batchtag->origin->productItem->children($ns['bs'])->guid."','";}
-            else {$cmdstr.="null,'";}
+            $cmdstr.=($batchtag->origin->productItem)?"'".$batchtag->origin->productItem->children($ns['bs'])->guid."','":"null,'";
+            
             $cmdstr.=$batchtag->origin->country->children($ns['bs'])->guid."','";
             $cmdstr.=$batchtag->origin->producer->children($ns['dt'])->enterprise->children($ns['bs'])->guid."','";
             $cmdstr.=$batchtag->origin->producer->children($ns['dt'])->role."','";

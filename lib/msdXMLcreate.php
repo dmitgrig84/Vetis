@@ -1,41 +1,49 @@
 <?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('ѕр€мой доступ к странице запрещЄн!');
 
-function msdXMLDetail($db,$xmlNode,$parentId,$xmlSchema,$sqlParams,$sqlResult){   
-    $i=1;    
-    foreach ($xmlSchema as $arr) {        
-        if (($arr["PARENTID"]<>$arr["ID"])&&($arr["PARENTID"]==$parentId)){                                                                      
-            if (is_null($arr['SEARCH'])) {
-                if (strpos($arr['CODE'],"v")){                    
-                    if ($sqlResult[0][$i] <> ""){                        
-                        $xmlNode->writeElement($arr['NAME'],iconv('cp1251', 'utf-8',$sqlResult[0][$i]));                        
+function msdXMLDetail($db,$xmlNode,$parentId,$xmlSchema,$sqlParams,$sqlResult,$rowResult){   
+    //$db -- подключение к Ѕƒ
+    //$xmlNode -- собираемый XML текущий тег
+    //$parentId -- родитель ID записи из таблицы xmlschema
+    //$xmlSchema -- набор тегов таблицы xmlschama
+    //$sqlParams -- параметр по которому отбираюс€ записи
+    //$sqlResult -- набор записей запроса
+    //$rowResult -- номер текущей записи
+    $i=1;
+    foreach ($xmlSchema as $arr) {
+        if (($arr["PARENTID"]<>$arr["ID"])&&($arr["PARENTID"]==$parentId)){//набор тегов таблицы xmlschama которые относ€тс€ к определенной ветке
+            if (is_null($arr['SEARCH'])) { //если у записи нет запроса
+                if (strpos($arr['CODE'],"v")){ //если это тег со значением
+                    if ($sqlResult[$rowResult][$i] <> ""){ //если не пусто(почему не проверил на is_null не знаю)
+                        $xmlNode->writeElement($arr['NAME'],iconv('cp1251', 'utf-8',$sqlResult[$rowResult][$i]));//добавл€ем к собираемому XML
                     }
-                } else
-                    if (strpos($arr['CODE'],"a")){
-                        $xmlNode->writeAttribute($arr['NAME'],$sqlResult[0][$i]);                                          
+                } else{
+                    if (strpos($arr['CODE'],"a")){//если это тег с атрибутом
+                        $xmlNode->writeAttribute($arr['NAME'],$sqlResult[$rowResult][$i]);                                          
                     } else{
                         $xmlNode->startElement($arr['NAME']);                                                        
-                        msdXMLDetail($db, $xmlNode, $arr["ID"],$xmlSchema, $sqlParams, $sqlResult);
+                        msdXMLDetail($db, $xmlNode, $arr["ID"],$xmlSchema, $sqlParams, $sqlResult,0);
                         $xmlNode->endElement();                                                                    
                     }
-                
+                }
             } else{
-                    $sqlQuery = $db->selectWithParams($arr['SEARCH'],$sqlParams,PDO::FETCH_NUM); 
-                    foreach ($sqlQuery as $query) {
-                        if (strpos($arr['CODE'],"v")){
-                            if ($sqlResult[0][$i] <> ""){
-                                
-                                $xmlNode->writeElement($arr['NAME'],iconv('cp1251', 'utf-8',$sqlQuery[0][$i]));                                
-                            } 
-                        } else{
-                             if (strpos($arr['CODE'],"a")){
-                                $xmlNode->writeAttribute($arr['NAME'],$sqlQuery[0][$i]);
-                             } else {
-                                $xmlNode->startElement($arr['NAME']);                                
-                                msdXMLDetail($db, $xmlNode, $arr["ID"], $xmlSchema, $sqlQuery[0][0], $sqlQuery);
-                                $xmlNode->endElement();                                                                            
-                             }                                                                                   
-                        }
-                    }                    
+                $sqlQuery = $db->selectWithParams($arr['SEARCH'],$sqlParams,PDO::FETCH_NUM);
+                $j=0;
+                foreach ($sqlQuery as $query) {                    
+                    if (strpos($arr['CODE'],"v")){
+                        if ($query[$i] <> ""){                                
+                            $xmlNode->writeElement($arr['NAME'],iconv('cp1251', 'utf-8',$query[$i]));                                
+                        } 
+                    } else{
+                        if (strpos($arr['CODE'],"a")){
+                            $xmlNode->writeAttribute($arr['NAME'],$query[$i]);
+                        } else {
+                            $xmlNode->startElement($arr['NAME']);                                
+                            msdXMLDetail($db, $xmlNode, $arr["ID"], $xmlSchema, $query[0], $sqlQuery,$j);
+                            $xmlNode->endElement();                                                                            
+                        }                                                                                   
+                    }
+                    $j++;
+                }
             }
         $i++;
         }
@@ -43,7 +51,11 @@ function msdXMLDetail($db,$xmlNode,$parentId,$xmlSchema,$sqlParams,$sqlResult){
 }
     
          
-function msdXMLCreate($db,$parentId,$xmlSchema,$sqlParams){   
+function msdXMLCreate($db,$parentId,$xmlSchema/**/,$sqlParams){
+    //$db -- подключение к Ѕƒ
+    //$parentId -- текущее значение корн€
+    //$xmlSchema -- набор тегов таблицы xmlschama
+    //$sqlParams -- параметр по которому отбираюс€ записи
     foreach ($xmlSchema as $arr) {
         if (($arr["ID"]==$arr["PARENTID"])&&($arr["PARENTID"]==$parentId)){            
             $xml=new XMLWriter();
@@ -52,10 +64,10 @@ function msdXMLCreate($db,$parentId,$xmlSchema,$sqlParams){
             $xml->startElement($arr["NAME"]);            
             
             if (is_null($arr["SEARCH"])){
-                msdXMLDetail($db,$xml,$arr["ID"],$xmlSchema,$sqlParams,null);
+                msdXMLDetail($db,$xml,$arr["ID"],$xmlSchema,$sqlParams,null,0);
             }
             else{
-                msdXMLDetail($db,$xml,$arr["ID"],$xmlSchema,$sqlParams,$db->selectWithParams($arr["SEARCH"],$sqlParams,PDO::FETCH_NUM)); 
+                msdXMLDetail($db,$xml,$arr["ID"],$xmlSchema,$sqlParams,$db->selectWithParams($arr["SEARCH"],$sqlParams,PDO::FETCH_NUM),0); 
             }
             $xml->endElement();
             $xml->endDocument();
@@ -83,9 +95,9 @@ function vetisSendXML($web,$db,$viid){
                 $up_sql_source="execute procedure vetis_processingresult($vetisidentifierid,:param,1)";
                 $db->updateBlob($up_sql_source,$xml->saveXML());        
 
-                $web->connect($row['WSDL'],$row['LOGIN'],$row['PASS']);                
+                /*$web->connect($row['WSDL'],$row['LOGIN'],$row['PASS']);                
                 $result=$web->request($xml->asXML(),$row['ENDPOINT'],$row['SOAPACTION'],SOAP_1_1);
-                if (!is_null($result)){                   
+                if (!is_null($result)){
                     $up_sql_result="execute procedure vetis_processingresult($vetisidentifierid,:param,5)";
                     $db->updateBlob($up_sql_result,$result->saveXML());        
                     
@@ -98,7 +110,7 @@ function vetisSendXML($web,$db,$viid){
                     }
                 } else{
                     array_push($return_result," ќшибка: нет ответа от сервера.");                    
-                }                       
+                }*/
             }
             catch (Exception $fault) {
                 $up_sql_result="execute procedure vetis_processingresult($vetisidentifierid,:param,-1)";            

@@ -19,13 +19,13 @@ function parseProduct($db,$xml,$viid,$parsepoint){
             $cmdstr.=$bstag->{'uuid'}."','";
             $cmdstr.=$bstag->guid."','";
             $cmdstr.=iconv('utf-8','cp1251',$dttag->name)."',";
-            if ($dttag->globalID) $cmdstr.="'".$dttag->globalID."',"; else $cmdstr.="null,";            
-            $cmdstr.=$dttag->code.",";            
-            $cmdstr.=$dttag->productType.",'";                        
+            $cmdstr.=($dttag->globalID)?"'".$dttag->globalID."',":"null,";
+            $cmdstr.=($dttag->code)?"'".$dttag->code."',":"null,";
+            $cmdstr.=$dttag->productType.",'";
             $cmdstr.=$dttag->product->children($ns['bs'])->guid."','";            
             $cmdstr.=$dttag->subProduct->children($ns['bs'])->guid."',";            
-            if ($dttag->producer) $cmdstr.="'".$dttag->producer->children($ns['bs'])->guid."',"; else $cmdstr.="null,";
-            if ($dttag->tmOwner) $cmdstr.="'".$dttag->tmOwner->children($ns['bs'])->guid."'"; else $cmdstr.="null";
+            $cmdstr.=($dttag->producer)?"'".$dttag->producer->children($ns['bs'])->guid."',":"null,";
+            $cmdstr.=($dttag->tmOwner)?"'".$dttag->tmOwner->children($ns['bs'])->guid."'":"null";
             $cmdstr.=")";
             //var_dump($cmdstr);
             $vi_row=$db->selectWithParams($cmdstr,null,null);      
