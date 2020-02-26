@@ -19,7 +19,7 @@ function saveVSDstatus($db,$tagVetDocument,$viid,$ns){
     $cmdstr.=$tagVetDocument->children($ns['vd'])->vetDStatus."',";
     $cmdstr.=($tagVetDocument->attributes()->qualifier)?"'".(string)$tagVetDocument->attributes()->qualifier."'":"null";            
     $cmdstr.=")";
-//throw new Exception($cmdstr);
+    //throw new Exception($cmdstr);
     $db->selectWithParams($cmdstr,null,null);  
 }
 
@@ -42,6 +42,7 @@ function parseStock($db,$xml,$viid,$parsepoint){
                 if ($tagEntry->getName()=='vetDocument')
                     saveVSDstatus($db,$tagEntry,$viid,$ns);
             }
+        }
     }
 }
 
@@ -59,10 +60,9 @@ function parseStockList($db,$xml,$viid,$parsepoint){
             (($substr[0]->attributes()->count) && //если есть атрибут count
              ((int)($substr[0]->attributes()->count)==0))) //он равен 0 
             throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');        
-        else{
+        else
             foreach ($substr[0]->children($ns['vd']) as $tagStockEntry)
                 saveStock($db,$tagStockEntry,$viid,$ns);
-            }
-        }
+            
     }
 }
