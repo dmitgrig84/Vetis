@@ -36,7 +36,8 @@ function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$error){
                 break;                                            
             default :
                 throw new Exception('Не задана таблица для парсинга');        
-        }     
+        }
+        $vi_row=$db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);  
         return true;
     }   
     catch (Exception $e) {        

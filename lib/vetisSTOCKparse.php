@@ -1,5 +1,28 @@
 <?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
 
+function saveStock($db,$tagStockEntry,$viid,$ns){
+    $cmdstr="execute procedure vetis_stockresult(".$viid.",'";
+    $cmdstr.=$tagStockEntry->children($ns['bs'])->uuid."','";
+    $cmdstr.=$tagStockEntry->children($ns['bs'])->guid."','";
+    $cmdstr.=$tagStockEntry->children($ns['bs'])->status."',";
+    $cmdstr.=($tagStockEntry->children($ns['bs'])->previous)?"'".$tagStockEntry->children($ns['bs'])->previous."','":"null,'";
+    $cmdstr.=$tagStockEntry->children($ns['vd'])->entryNumber."',";
+    $cmdstr.=$tagStockEntry->children($ns['vd'])->batch->volume.",'";            
+    $cmdstr.=$tagStockEntry->children($ns['vd'])->vetDocument->children($ns['bs'])->uuid."')";            
+    //throw new Exception($cmdstr);
+    $vi_row=$db->selectWithParams($cmdstr,null,null);  
+}   
+
+function saveVSDstatus($db,$tagVetDocument,$viid,$ns){
+    $cmdstr="execute procedure vetis_vsdstatusresult(".$viid.",'";
+    $cmdstr.=$tagVetDocument->children($ns['bs'])->uuid."','";
+    $cmdstr.=$tagVetDocument->children($ns['vd'])->vetDStatus."',";
+    $cmdstr.=($tagVetDocument->attributes()->qualifier)?"'".(string)$tagVetDocument->attributes()->qualifier."'":"null";            
+    $cmdstr.=")";
+//throw new Exception($cmdstr);
+    $db->selectWithParams($cmdstr,null,null);  
+}
+
 function parseStock($db,$xml,$viid,$parsepoint){                   
     if (parseSAR($db,$xml,$viid)){        
         $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
@@ -12,23 +35,12 @@ function parseStock($db,$xml,$viid,$parsepoint){
     
         if (count($substr)==0) //если не нашли точку входа, формат не известен
             throw new Exception('Ошибка: Не верный формат ответа ВЕТИС. Обратитесь к разработчику модуля.');            
-        else{
-            $tagStockEntry=$substr[0]->children($ns['merc'])->stockEntry;
-            $tagVetDocument=$substr[0]->children($ns['merc'])->vetDocument;
-        
-            $cmdstr="execute procedure vetis_stockresult(".$viid.",'";
-            $cmdstr.=$tagStockEntry->children($ns['bs'])->uuid."','";
-            $cmdstr.=$tagStockEntry->children($ns['bs'])->guid."','";
-            $cmdstr.=$tagStockEntry->children($ns['bs'])->status."',";
-            if ($tagStockEntry->children($ns['bs'])->previous) {$cmdstr.="'".$tagStockEntry->children($ns['bs'])->previous."','";} else {$cmdstr.="null,'";}
-            $cmdstr.=$tagStockEntry->children($ns['vd'])->entryNumber."',";
-            $cmdstr.=$tagStockEntry->children($ns['vd'])->batch->volume.",'";            
-            $cmdstr.=$tagStockEntry->children($ns['vd'])->vetDocument->children($ns['bs'])->uuid."','";            
-            $cmdstr.=$tagVetDocument->children($ns['bs'])->uuid."','";
-            $cmdstr.=$tagVetDocument->children($ns['vd'])->vetDStatus."','";
-            $cmdstr.=(string)$tagVetDocument->attributes()->qualifier."')";            
-            //throw new Exception($cmdstr);
-            $vi_row=$db->selectWithParams($cmdstr,null,null);  
+        else{            
+            foreach ($substr[0]->children($ns['merc']) as $tagEntry){
+                if ($tagEntry->getName()=='stockEntry')
+                    saveStock($db,$tagEntry,$viid,$ns);
+                if ($tagEntry->getName()=='vetDocument')
+                    saveVSDstatus($db,$tagEntry,$viid,$ns);
             }
     }
 }
@@ -48,18 +60,8 @@ function parseStockList($db,$xml,$viid,$parsepoint){
              ((int)($substr[0]->attributes()->count)==0))) //он равен 0 
             throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');        
         else{
-            foreach ($substr[0]->children($ns['vd']) as $tagStockEntry){                                
-                $cmdstr="execute procedure vetis_stockresult(".$viid.",'";
-                $cmdstr.=$tagStockEntry->children($ns['bs'])->uuid."','";
-                $cmdstr.=$tagStockEntry->children($ns['bs'])->guid."','";
-                $cmdstr.=$tagStockEntry->children($ns['bs'])->status."',";
-                if ($tagStockEntry->children($ns['bs'])->previous) {$cmdstr.="'".$tagStockEntry->children($ns['bs'])->previous."','";} else {$cmdstr.="null,'";}
-                $cmdstr.=$tagStockEntry->children($ns['vd'])->entryNumber."',";
-                $cmdstr.=$tagStockEntry->children($ns['vd'])->batch->volume.",'";            
-                $cmdstr.=$tagStockEntry->children($ns['vd'])->vetDocument->children($ns['bs'])->uuid."',null,null,null)";            
-            
-                //throw new Exception($cmdstr);
-                $vi_row=$db->selectWithParams($cmdstr,null,null);  
+            foreach ($substr[0]->children($ns['vd']) as $tagStockEntry)
+                saveStock($db,$tagStockEntry,$viid,$ns);
             }
         }
     }
