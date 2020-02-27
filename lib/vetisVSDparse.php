@@ -10,11 +10,7 @@ function parseVSD($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
             
-        if ((count($substr)==0) || //если не нашли точку входа, формат не известен
-            (($substr[0]->attributes()->count) && //если есть атрибут count
-             ((int)($substr[0]->attributes()->count)==0))) //он равен 0 
-            throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');
-        else
+        if (parseEmptyList($db,$substr,$viid))        
             foreach ($substr[0]->children($ns['vd']) as $out_ns){        
             $bstag=$out_ns->children($ns['bs']);
             $vdtag=$out_ns->children($ns['vd']);
@@ -36,7 +32,7 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=$cctag->consignee->children($ns['dt'])->businessEntity->children($ns['bs'])->guid."','";                        
             $cmdstr.=$cctag->consignee->children($ns['dt'])->enterprise->children($ns['bs'])->guid."',";            
             $cmdstr.=$cctag->transportInfo->transportType.",'";
-            $cmdstr.=$transportNumber[0]."','";            
+            $cmdstr.=iconv('utf-8','cp1251',$transportNumber[0])."','";            
             $cmdstr.=$cctag->transportStorageType."','";
             $cmdstr.=$batchtag->productItem->children($ns['bs'])->guid."','";
             $cmdstr.=$batchtag->volume."','";

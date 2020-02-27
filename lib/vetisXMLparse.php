@@ -37,7 +37,7 @@ function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$error){
             default :
                 throw new Exception('Не задана таблица для парсинга');        
         }
-        $vi_row=$db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);  
+        $db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);
         return true;
     }   
     catch (Exception $e) {        
@@ -83,4 +83,15 @@ function parseHB($xml){
             throw new Exception($substr[0]->asXML()); 
         }
     }
+}
+
+function parseEmptyList($db,$subxml,$viid){
+    if ((count($subxml)==0) || //если не нашли точку входа, формат не известен
+            (($subxml[0]->attributes()->count) && //если есть атрибут count
+             ((int)($subxml[0]->attributes()->count)==0))){ //он равен 0
+        $db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);
+        throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');
+    }    
+    else
+        return true;
 }
