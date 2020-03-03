@@ -56,7 +56,11 @@ function parseStockList($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-        if (parseEmptyList($db,$substr,$viid))//проверяем на пустой список
+        if ((count($substr)==0) || //если не нашли точку входа, формат не известен
+            (($substr[0]->attributes()->count) && //если есть атрибут count
+             ((int)($substr[0]->attributes()->count)==0))) //он равен 0 
+            throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');        
+        else
             foreach ($substr[0]->children($ns['vd']) as $tagStockEntry)
                 saveStock($db,$tagStockEntry,$viid,$ns);
             
