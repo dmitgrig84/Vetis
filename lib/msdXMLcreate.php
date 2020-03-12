@@ -102,11 +102,11 @@ function vetisSendXML($web,$db,$viid){
                     $db->updateBlob($up_sql_result,$result->saveXML());        
                     
                     include 'vetisXMLparse.php';
-                    if (parseXML($db,$result,$row['PARSETABLE'],$vetisidentifierid,$row['PARSEPOINT'],$error_parse)){
-                        array_push($return_result," Успешно: $resultstr");
+                    if (parseXML($db,$result,$row['PARSETABLE'],$vetisidentifierid,$row['PARSEPOINT'],$parse_result)){
+                        array_push($return_result," Успешно: ".$resultstr." ".$parse_result);
                     }
                     else {
-                        array_push($return_result,$error_parse);
+                        array_push($return_result,$parse_result);
                     }
                 } else{
                     array_push($return_result," Ошибка: нет ответа от сервера.");                    

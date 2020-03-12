@@ -1,6 +1,7 @@
 <?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
 
 function parseContractor($db,$xml,$viid,$parsepoint){         
+    $countrow=0;
     if (parseHB($xml)){
         $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
         $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
@@ -26,6 +27,8 @@ function parseContractor($db,$xml,$viid,$parsepoint){
             $cmdstr.=$dttag->fio."')";
             //var_dump($cmdstr);            
             $vi_row=$db->selectWithParams($cmdstr,null,null);             
+            $countrow++;
             }
+            return $countrow;
     }
 }

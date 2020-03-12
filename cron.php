@@ -2,6 +2,7 @@
     /*Данный скрипт должен запускаться каждый день в 19:00(отправка запроса) и 19:10(получение результата)*/
     
     ini_set('display_errors',1);
+    ini_set('date.timezone','Etc/GMT-3');
     error_reporting(E_ALL);
     $logfile=__DIR__."/cron.log";
     
@@ -16,22 +17,34 @@
     $flagtime=strtotime(date("d.m.Y 18:00:00"));
     //Создание запроса и его отправка//Получение и парсинг результата
     foreach ($db->selectWithParams("select id from vetisconnect",null,null) as $connect){ //обрабатываем все необходимые поднадзорные обьекты
-        
-        foreach ($db->selectWithParams("select * from buytrans_vetisrequest(".$connect['ID'].",16,'vetDocumentType=OUTGOING;begindate=".date("d.m.Y").";enddate=".date("d.m.Y")."')",null,null) as $viid){
-            //16 - тип VETISSOAPACTION Получение списка созданных/измененных ВСД за период //смотрим за день                                           
-            foreach(vetisSendXML($web,$db,$viid['VIID']) as $value)
-                error_log(date("d.m.Y H:m:s")." ".$value."\r\n",3,$logfile);
-        }
+        requestVSD($db,$connect['ID'],$web,$wheninsert);
             
-        if ((strtotime(date(date("d.m.Y h:i:s")))>$flagtime)&&(strtotime($viid['WHENINSERT'])<$flagtime)) {//если был раньше создан запрос но не получен ответ, то мы должны послать запрос в текущем веремени
-            foreach ($db->selectWithParams("select * from buytrans_vetisrequest(".$connect['ID'].",16,'vetDocumentType=OUTGOING;begindate=".date("d.m.Y").";enddate=".date("d.m.Y")."')",null,null) as $viid){
-                //16 - тип VETISSOAPACTION Получение списка созданных/измененных ВСД за период //смотрим за день                                           
-                foreach(vetisSendXML($web,$db,$viid['VIID']) as $value)
-                    error_log(date("d.m.Y H:m:s")." ".$value."\r\n",3,$logfile);
-            }
+        if ((strtotime(date(date("d.m.Y h:i:s")))>$flagtime)&&(strtotime($wheninsert)<$flagtime)) {
+            //если был раньше создан запрос но не получен ответ, то мы должны послать запрос в текущем веремени
+            requestVSD($db,$connect['ID'],$web,$wheninsert);
         }
+        
+        sendSale($db,$connectid,$web);
     }
     
+    function requestVSD($db,$connectid,$web,&$wheninsert){
+        foreach ($db->selectWithParams("select * from buytrans_vetisrequest(".$connectid.",16,'begindate=".date("d.m.Y").";enddate=".date("d.m.Y")."')",null,null) as $viid){
+            //16 - тип VETISSOAPACTION Получение списка созданных/измененных ВСД за период //смотрим за день
+            foreach(vetisSendXML($web,$db,$viid['VIID']) as $value)
+                error_log(date("d.m.Y H:i:s")." ".$value."\r\n",3,$logfile);
+            $wheninsert=$viid['WHENINSERT'];
+        }        
+    }
+    
+    function sendSale($db,$connectid,$web){
+        foreach ($db->selectWithParams("select bv.saleid from buytrans_vetissaleview(cast('today' as timestamp)-7,cast('today' as timestamp),".$connectid.") bv where bv.vetisstatusid in (1,6)",null,null) as $sale){
+            foreach ($db->selectWithParams("select * from buytrans_vetisrequest(".$connectid.",11,'saleid=".$sale['SALEID']."')",null,null) as $viid){
+                foreach(vetisSendXML($web,$db,$viid['VIID']) as $value)
+                    error_log(date("d.m.Y H:i:s")." ".$value."\r\n",3,$logfile);
+            }
+            sleep(1);            
+        }
+    }
 
 
     

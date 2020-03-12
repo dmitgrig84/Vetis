@@ -1,10 +1,11 @@
  <?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
-function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$error){
+function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$parse_result){
+    $countrow=0;
     try{
         switch ($parsetable){
             case 'VETISCONTRACTOR':
                 include 'vetisCONTRACTORparse.php';                                
-                parseContractor($db,$XML,$viid,$parsepoint);        
+                $countrow=parseContractor($db,$XML,$viid,$parsepoint);        
                 break;
             case 'VETISDISTRIBUTION':
                 include 'vetisDISTRIBUTIONparse.php';                                
@@ -37,11 +38,12 @@ function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$error){
             default :
                 throw new Exception('Не задана таблица для парсинга');        
         }
-        $vi_row=$db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);  
+        $db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);  
+        $parse_result=" Обработано: ".$countrow." записей.";
         return true;
     }   
     catch (Exception $e) {        
-        $error = $e->getMessage();
+        $parse_result = $e->getMessage();
         return false;        
     }
 }
