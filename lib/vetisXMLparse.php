@@ -1,45 +1,46 @@
  <?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
+ 
 function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$parse_result){
     $countrow=0;
     try{
         switch ($parsetable){
             case 'VETISCONTRACTOR':
-                include 'vetisCONTRACTORparse.php';                                
+                require_once('vetisCONTRACTORparse.php');                                
                 $countrow=parseContractor($db,$XML,$viid,$parsepoint);        
                 break;
             case 'VETISDISTRIBUTION':
-                include 'vetisDISTRIBUTIONparse.php';                                
+                require_once('vetisDISTRIBUTIONparse.php');                                
                 parseDistribution($db,$XML,$viid,$parsepoint);        
                 break;            
             case 'VETISPRODUCT':
-                include 'vetisPRODUCTparse.php';                
+                require_once('vetisPRODUCTparse.php');                
                 parseProduct($db,$XML,$viid,$parsepoint);        
                 break;             
             case 'VETISIDENTIFIER':
-                include 'vetisIDENTIFIERparse.php';                
-                parseIdentifier($db,$XML,$viid,$parsepoint);        
+                require_once('vetisIDENTIFIERparse.php');                
+                $countrow=parseIdentifier($db,$XML,$viid,$parsepoint);        
                 break;                        
             case 'VETISVSD':
-                include 'vetisVSDparse.php';
-                parseVSD($db,$XML,$viid,$parsepoint);        
+                require_once('vetisVSDparse.php');
+                $countrow=parseVSD($db,$XML,$viid,$parsepoint);        
                 break;             
             case 'VETISUNIT':
-                include 'vetisUNITparse.php';
+                require_once('vetisUNITparse.php');
                 parseUnit($db,$XML,$viid,$parsepoint);        
                 break;             
             case 'VETISSTOCK':
-                include 'vetisSTOCKparse.php';
-                parseStock($db,$XML,$viid,$parsepoint);        
+                require_once('vetisSTOCKparse.php');
+                $countrow=parseStock($db,$XML,$viid,$parsepoint);        
                 break;                                
             case 'VETISSTOCKLIST':
-                include 'vetisSTOCKparse.php';
-                parseStockList($db,$XML,$viid,$parsepoint);        
+                require_once('vetisSTOCKparse.php');
+                $countrow=parseStockList($db,$XML,$viid,$parsepoint);        
                 break;                                            
             default :
                 throw new Exception('Не задана таблица для парсинга');        
         }
         $db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);  
-        $parse_result=" Обработано: ".$countrow." записей.";
+        $parse_result=$parse_result." Обработано: ".$countrow." записей.";
         return true;
     }   
     catch (Exception $e) {        

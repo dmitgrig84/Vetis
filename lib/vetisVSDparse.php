@@ -13,7 +13,7 @@ function parseVSD($db,$xml,$viid,$parsepoint){
         if ((count($substr)==0) || //если не нашли точку входа, формат не известен
             (($substr[0]->attributes()->count) && //если есть атрибут count
              ((int)($substr[0]->attributes()->count)==0))) //он равен 0 
-            throw new Exception('Отсутствуют записи для обработки. Смотрите XML файл результата запроса.');
+            return 0;
         else
             foreach ($substr[0]->children($ns['vd']) as $out_ns){        
             $bstag=$out_ns->children($ns['bs']);
@@ -65,8 +65,9 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=$vdtag->referencedDocument->relationshipType;                
             $cmdstr.=")";
             //var_dump($cmdstr);
-            $vi_row=$db->selectWithParams($cmdstr,null,null);      
+            $db->selectWithParams($cmdstr,null,null);
+            
             }
-        
+            return $substr[0]->children($ns['vd'])->count();        
     }
 }

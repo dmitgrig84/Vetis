@@ -12,5 +12,6 @@ function parseIdentifier($db,$xml,$viid,$parsepoint){
         $cmdstr.=$substr[0]->application->applicationId."')";
         //var_dump($cmdstr);        
         $vi_row=$db->selectWithParams($cmdstr,null,null);      
-        }
+        return 1;       
+    }
 }

@@ -31,11 +31,15 @@ $this->fetch = null;
 
 function selectWithParams($sqlStatment, $sqlParams, $fetchMode){    
     try {
+        if ($this->db->inTransaction()) $this->db->commit();
+        $this->db->beginTransaction();   
         $stmt = $this->db->prepare($sqlStatment);
         if (!is_null($sqlParams))
-        $stmt->bindValue(1, $sqlParams); //сдесь надо переделать на массив       
-        $stmt->execute();            
-        return $stmt->fetchAll($fetchMode);
+            $stmt->bindValue(1, $sqlParams); //сдесь надо переделать на массив       
+        $stmt->execute();
+        $result=$stmt->fetchAll($fetchMode);
+        $this->db->commit();
+        return $result;
     }
     catch (PDOException $e) {
         // Если соединение произошло и транзакция стартовала, откатываем её
@@ -44,6 +48,8 @@ function selectWithParams($sqlStatment, $sqlParams, $fetchMode){
         throw $e;
     }         
 }
+
+
 
 function select(&$query,$sql) {    
     $query=$this->db->query($sql);

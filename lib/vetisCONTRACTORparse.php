@@ -1,7 +1,6 @@
 <?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
 
 function parseContractor($db,$xml,$viid,$parsepoint){         
-    $countrow=0;
     if (parseHB($xml)){
         $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
         $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
@@ -11,7 +10,7 @@ function parseContractor($db,$xml,$viid,$parsepoint){
     
         if (count($substr)==0) //если не нашли точку входа, формат не известен
             throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');        
-        else    
+        else{    
             foreach ($substr[0]->children($ns['dt']) as $out_ns){        
             $bstag=$out_ns->children($ns['bs']);
             $dttag=$out_ns->children($ns['dt']);
@@ -26,9 +25,9 @@ function parseContractor($db,$xml,$viid,$parsepoint){
             $cmdstr.=$dttag->kpp."','";
             $cmdstr.=$dttag->fio."')";
             //var_dump($cmdstr);            
-            $vi_row=$db->selectWithParams($cmdstr,null,null);             
-            $countrow++;
+            $vi_row=$db->selectWithParams($cmdstr,null,null);                         
             }
-            return $countrow;
+            return $substr[0]->children($ns['dt'])->count();
+        }
     }
 }

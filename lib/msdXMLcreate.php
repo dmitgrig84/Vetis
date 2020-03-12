@@ -51,7 +51,7 @@ function msdXMLDetail($db,$xmlNode,$parentId,$xmlSchema,$sqlParams,$sqlResult,$r
 }
     
          
-function msdXMLCreate($db,$parentId,$xmlSchema/**/,$sqlParams){
+function msdXMLCreate($db,$parentId,$xmlSchema,$sqlParams){
     //$db -- подключение к БД
     //$parentId -- текущее значение корня
     //$xmlSchema -- набор тегов таблицы xmlschama
@@ -101,7 +101,7 @@ function vetisSendXML($web,$db,$viid){
                     $up_sql_result="execute procedure vetis_processingresult($vetisidentifierid,:param,5)";
                     $db->updateBlob($up_sql_result,$result->saveXML());        
                     
-                    include 'vetisXMLparse.php';
+                    require_once('vetisXMLparse.php');
                     if (parseXML($db,$result,$row['PARSETABLE'],$vetisidentifierid,$row['PARSEPOINT'],$parse_result)){
                         array_push($return_result," Успешно: ".$resultstr." ".$parse_result);
                     }
