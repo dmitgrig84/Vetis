@@ -10,7 +10,7 @@ function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$parse_result){
                 break;
             case 'VETISDISTRIBUTION':
                 require_once('vetisDISTRIBUTIONparse.php');                                
-                parseDistribution($db,$XML,$viid,$parsepoint);        
+                $countrow=parseDistribution($db,$XML,$viid,$parsepoint);        
                 break;            
             case 'VETISPRODUCT':
                 require_once('vetisPRODUCTparse.php');                

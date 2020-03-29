@@ -1,10 +1,10 @@
 <?php header('Content-Type: text/html; charset=windows-1251'); define("MSD", ""); // УСТАНОВКА КОНСТАНТЫ ГЛАВНОГО КОНТРОЛЛЕРА
-    /*Данный скрипт должен запускаться каждый день в 19:00(отправка запроса) и 19:10(получение результата)*/
+/*Данный скрипт должен запускаться каждый день в 19:00(отправка запроса) и 19:10(получение результата)*/
     
 ini_set('display_errors',1);
 ini_set('date.timezone','Etc/GMT-3');
 error_reporting(E_ALL);
-$logfile=__DIR__."\cron.log";
+$logfile=__DIR__."/cron.log";
     
 // Подключение к БД
 require_once("lib/coreDB.php");
@@ -44,7 +44,7 @@ function requestVSD($db,$connectid,$web,$logfile,&$wheninsert){//получение всех 
 }
     
 function sendSale($db,$connectid,$web,$logfile){
-    foreach ($db->selectWithParams("select first 2 bv.saleid from buytrans_vetissaleview(cast('today' as timestamp)-7,cast('today' as timestamp),".$connectid.") bv where bv.vetisstatusid in (1,6)",null,null) as $sale){
+    foreach ($db->selectWithParams("select bv.saleid from buytrans_vetissaleview(cast('today' as timestamp)-7,cast('today' as timestamp),".$connectid.") bv where bv.vetisstatusid in (1,6)",null,null) as $sale){
         //11 - тип VETISSOAPACTION Отправляем доступные накладные
         foreach ($db->selectWithParams("select * from buytrans_vetisrequest(".$connectid.",11,'saleid=".$sale['SALEID']."')",null,null) as $viid){
             foreach(vetisSendXML($web,$db,$viid['VIID']) as $value)

@@ -36,7 +36,7 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=$cctag->consignee->children($ns['dt'])->businessEntity->children($ns['bs'])->guid."','";                        
             $cmdstr.=$cctag->consignee->children($ns['dt'])->enterprise->children($ns['bs'])->guid."',";            
             $cmdstr.=$cctag->transportInfo->transportType.",'";
-            $cmdstr.=$transportNumber[0]."','";            
+            $cmdstr.=iconv('utf-8','cp1251',$transportNumber[0])."','";            
             $cmdstr.=$cctag->transportStorageType."','";
             $cmdstr.=$batchtag->productItem->children($ns['bs'])->guid."','";
             $cmdstr.=$batchtag->volume."','";
@@ -46,8 +46,9 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=($dopfd->hour)?" ".$dopfd->hour.":00','":"','";
             
             $cmdstr.=$exdfd->year."-".$exdfd->month."-".$exdfd->day;
-            $cmdstr.=($exdfd->hour)?" ".$exdfd->hour.":00','":"','";
+            $cmdstr.=($exdfd->hour)?" ".$exdfd->hour.":00','":"',";
             
+            $cmdstr.=($batchtag->batchID)?"'".iconv('utf-8','cp1251',$batchtag->batchID)."','":"null,'";            
             $cmdstr.=$batchtag->perishable."',";
             $cmdstr.=($batchtag->origin->productItem)?"'".$batchtag->origin->productItem->children($ns['bs'])->guid."','":"null,'";
             
@@ -64,8 +65,8 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=$vdtag->referencedDocument->issueDate."',";
             $cmdstr.=$vdtag->referencedDocument->relationshipType;                
             $cmdstr.=")";
-            //var_dump($cmdstr);
-            $db->selectWithParams($cmdstr,null,null);
+            var_dump($cmdstr);
+            //$db->selectWithParams($cmdstr,null,null);
             
             }
             return $substr[0]->children($ns['vd'])->count();        

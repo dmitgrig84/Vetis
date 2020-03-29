@@ -10,7 +10,7 @@ function parseDistribution($db,$xml,$viid,$parsepoint){
     
         if (count($substr)==0) //если не нашли точку входа, формат не известен
             throw new Exception('Ошибка: не верный формат поступившего документа, смотрите результат выполнения.');
-        else    
+        else{    
             foreach ($substr[0]->children($ns['dt']) as $out_ns){        
             if ($out_ns->children($ns['bs'])){
                 $bstag=$out_ns->children($ns['bs']);
@@ -33,6 +33,8 @@ function parseDistribution($db,$xml,$viid,$parsepoint){
             $cmdstr.=")";
             //var_dump($cmdstr);
             $vi_row=$db->selectWithParams($cmdstr,null,null);             
-            }        
+            }
+        return $substr[0]->children($ns['dt'])->count();    
+        }
     }
 }
