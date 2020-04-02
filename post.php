@@ -1,18 +1,18 @@
-<?php header('Content-Type: text/html; charset=windows-1251'); define("MSD", ""); // –£–°–¢–ê–ù–û–í–ö–ê –ö–û–ù–°–¢–ê–ù–¢–´ –ì–õ–ê–í–ù–û–ì–û –ö–û–ù–¢–†–û–õ–õ–ï–†–ê
+<?php header('Content-Type: text/html; charset=windows-1251'); define("MSD", ""); // ”—“¿ÕŒ¬ ¿  ŒÕ—“¿Õ“€ √À¿¬ÕŒ√Œ  ŒÕ“–ŒÀÀ≈–¿
 
 if (empty($_POST["dbuser"])||empty($_POST["dbpass"])||empty($_POST["viid"])){
-    echo '–û—Ç—Å—É—Ç—Å—Ç–≤—É—é—Ç –≤—Ö–æ–¥–Ω—ã–µ –¥–∞–Ω–Ω—ã–µ.';     
+    echo 'ŒÚÒÛÚÒÚ‚Û˛Ú ‚ıÓ‰Ì˚Â ‰‡ÌÌ˚Â.';     
 }
 else {
     ini_set('display_errors',1);
     error_reporting(E_ALL);
-    // –ü–û–î–ö–õ–Æ–ß–ï–ù–ò–ï –ö –ë–î –ë–õ–ê–ë–õ–ê–ë–õ–ê
+    // œŒƒ Àﬁ◊≈Õ»≈   ¡ƒ WIN1251 
     require_once("lib/coreDB.php"); 
-    $dsn = 'firebird:dbname=192.168.0.11/3050:/base/msd.gdb;charset=win1251;dialect=3;role=rdb$admin'; // –ù–ê–ó–í–ê–ù–ò–ï –ë–ê–ó–´ –î–õ–Ø –°–ê–ô–¢–ê'; 
+    $dsn = 'firebird:dbname=192.168.0.11/3050:/base/msd.gdb;charset=win1251;dialect=3;role=rdb$admin'; // Õ¿«¬¿Õ»≈ ¡¿«€ ƒÀﬂ —¿…“¿'; 
     $db = new Msd();
     $db->connect($dsn,$_POST["dbuser"],$_POST["dbpass"]);
 
-    // –ü–û–î–ö–õ–Æ–ß–ï–ù–ò–ï –ö WEB
+    // œŒƒ Àﬁ◊≈Õ»≈   WEB
     require_once("lib/coreWEB.php"); 
     $web = new VetisAPI();
 
