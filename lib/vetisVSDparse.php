@@ -65,8 +65,8 @@ function parseVSD($db,$xml,$viid,$parsepoint){
             $cmdstr.=$vdtag->referencedDocument->issueDate."',";
             $cmdstr.=$vdtag->referencedDocument->relationshipType;                
             $cmdstr.=")";
-            var_dump($cmdstr);
-            //$db->selectWithParams($cmdstr,null,null);
+            //var_dump($cmdstr);
+            $db->selectWithParams($cmdstr,null,null);
             
             }
             return $substr[0]->children($ns['vd'])->count();        

@@ -5,7 +5,7 @@ function parseUnit($db,$xml,$viid,$parsepoint){
     $xml->registerXPathNamespace('dt', 'http://api.vetrf.ru/schema/cdm/dictionary/v2');
     $xml->registerXPathNamespace('v2', 'http://api.vetrf.ru/schema/cdm/registry/ws-definitions/v2');
      
-    $ns = $xml->getNamespaces(true);            
+    $ns = $xml->getNamespaces(true);  //sdf          
     $substr=$xml->xpath($parsepoint);
     
     if (count($substr)==0) //если не нашли точку входа, формат не известен
