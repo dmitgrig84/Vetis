@@ -1,4 +1,4 @@
-<?php  defined('MSD') OR die('Прямой доступ к странице запрещён!');
+<?php header('Content-Type: text/html; charset=utf-8');  defined('MSD') OR die('Прямой доступ к странице запрещён!');
 //Кодировка UTF-8
 function parseVSD($db,$xml,$viid,$parsepoint){
     if (parseSAR($db,$xml,$viid)){        

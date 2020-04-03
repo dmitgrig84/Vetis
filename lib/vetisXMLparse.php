@@ -1,4 +1,4 @@
- <?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
+ <?php header('Content-Type: text/html; charset=utf-8'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
 //Кодировка UTF-8 
 function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$parse_result){
     $countrow=0;
@@ -62,7 +62,7 @@ function parseSAR($db,$xml,$viid){
                 throw new Exception('Запрос обрабатывается на сервере ВЕТИС, запросите ответ чуть позже.');        
             case 'REJECTED':
                 $vi_row=$db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);                
-                throw new Exception("Ошибка: ".iconv('utf-8','cp1251',$substr[0]->children($ns['apl'])->errors->error));
+                throw new Exception("Ошибка: ".$substr[0]->children($ns['apl'])->errors->error);
             case 'COMPLETED':                
                 return true;
             default :

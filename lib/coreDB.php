@@ -1,8 +1,7 @@
-<?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
+<?php header('Content-Type: text/html; charset=utf-8'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
 //Кодировка UTF-8
 class Msd
 {
-
 
 var $opt = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -48,8 +47,6 @@ function selectWithParams($sqlStatment, $sqlParams, $fetchMode){
         throw $e;
     }         
 }
-
-
 
 function select(&$query,$sql) {    
     $query=$this->db->query($sql);

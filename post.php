@@ -1,4 +1,4 @@
-<?php header('Content-Type: text/html; charset=windows-1251'); define("MSD", ""); // УСТАНОВКА КОНСТАНТЫ ГЛАВНОГО КОНТРОЛЛЕРА
+<?php header('Content-Type: text/html; charset=utf-8'); define("MSD", ""); // УСТАНОВКА КОНСТАНТЫ ГЛАВНОГО КОНТРОЛЛЕРА 
 //Кодировка UTF-8
 if (empty($_POST["dbuser"])||empty($_POST["dbpass"])||empty($_POST["viid"])){
     echo 'Отсутствуют входные данные.';     
