@@ -1,4 +1,4 @@
-<?php header('Content-Type: text/html; charset=utf-8'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
+<?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
 //Кодировка UTF-8
 function msdXMLDetail($db,$xmlNode,$parentId,$xmlSchema,$sqlParams,$sqlResult,$rowResult){   
     //$db -- подключение к БД
@@ -86,7 +86,7 @@ function vetisSendXML($web,$db,$viid){
             $xmlschemaid=$row['XMLSCHEMAID'];
             $vetisidentifierid=$row['VETISIDENTIFIERID'];
             //$vetisconnectwsdlid=$row['VETISCONNECTWSDLID'];
-            $resultstr=$row['RESULTSTR'];
+            $resultstr=iconv('cp1251','utf-8',$row['RESULTSTR']);
             
             try{
                 $xs_sql="select * from xmlschema x where x.rootid= $xmlschemaid order by x.code";                     
@@ -114,7 +114,7 @@ function vetisSendXML($web,$db,$viid){
             }
             catch (Exception $fault) {
                 $up_sql_result="execute procedure vetis_processingresult($vetisidentifierid,:param,-1)";            
-                $faultMessage=iconv('utf-8','cp1251',$fault->getMessage());
+                $faultMessage=$fault->getMessage();
                 $db->updateBlob($up_sql_result,$faultMessage);            
                 array_push($return_result,"Ошибка: $resultstr $faultMessage");
             }

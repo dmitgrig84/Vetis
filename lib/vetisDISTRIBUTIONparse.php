@@ -1,4 +1,4 @@
-<?php  header('Content-Type: text/html; charset=utf-8'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
+<?php  defined('MSD') OR die('Прямой доступ к странице запрещён!');
 //Кодировка UTF-8
 function parseDistribution($db,$xml,$viid,$parsepoint){
     if (parseHB($xml)){

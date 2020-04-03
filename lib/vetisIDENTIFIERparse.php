@@ -1,4 +1,4 @@
-<?php header('Content-Type: text/html; charset=utf-8'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
+<?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
 //Кодировка UTF-8
 function parseIdentifier($db,$xml,$viid,$parsepoint){         
     $xml->registerXPathNamespace('ws', 'http://api.vetrf.ru/schema/cdm/application/ws-definitions');

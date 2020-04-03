@@ -1,4 +1,4 @@
-<?php header('Content-Type: text/html; charset=utf-8'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
+<?php defined('MSD') OR die('Прямой доступ к странице запрещён!');
 //Кодировка UTF-8
 function saveStock($db,$tagStockEntry,$viid,$ns){
     $cmdstr="execute procedure vetis_stockresult(".$viid.",'";
