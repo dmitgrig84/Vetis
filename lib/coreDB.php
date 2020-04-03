@@ -1,5 +1,5 @@
-<?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
-
+<?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('РџСЂСЏРјРѕР№ РґРѕСЃС‚СѓРї Рє СЃС‚СЂР°РЅРёС†Рµ Р·Р°РїСЂРµС‰С‘РЅ!');
+//РљРѕРґРёСЂРѕРІРєР° UTF-8
 class Msd
 {
 
@@ -35,14 +35,14 @@ function selectWithParams($sqlStatment, $sqlParams, $fetchMode){
         $this->db->beginTransaction();   
         $stmt = $this->db->prepare($sqlStatment);
         if (!is_null($sqlParams))
-            $stmt->bindValue(1, $sqlParams); //сдесь надо переделать на массив       
+            $stmt->bindValue(1, $sqlParams); 
         $stmt->execute();
         $result=$stmt->fetchAll($fetchMode);
         $this->db->commit();
         return $result;
     }
     catch (PDOException $e) {
-        // Если соединение произошло и транзакция стартовала, откатываем её
+        
         if ($this->db &&  $this->db->inTransaction())
             $this->db->rollback();
         throw $e;
@@ -61,12 +61,12 @@ function updateBlob($sql,$blob) {
             $this->db->commit();    
         $this->db->beginTransaction();   
         $stmt = $this->db->prepare($sql);  
-        $stmt->bindParam(':param', $blob, PDO::PARAM_LOB);//сдесь надо переделать на массив                
+        $stmt->bindParam(':param', $blob, PDO::PARAM_LOB);
         $stmt->execute();
         $this->db->commit();
     } 
     catch (PDOException $e) {
-        // Если соединение произошло и транзакция стартовала, откатываем её
+        
         if ($this->db &&  $this->db->inTransaction())
             $this->db->rollback();
         throw $e;

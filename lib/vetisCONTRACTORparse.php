@@ -1,5 +1,5 @@
-<?php defined('MSD') OR die('Ïğÿìîé äîñòóï ê ñòğàíèöå çàïğåù¸í!');
-
+<?php defined('MSD') OR die('ĞŸÑ€ÑĞ¼Ğ¾Ğ¹ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿ Ğº ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğµ Ğ·Ğ°Ğ¿Ñ€ĞµÑ‰Ñ‘Ğ½!');
+//ĞšĞ¾Ğ´Ğ¸Ñ€Ğ¾Ğ²ĞºĞ° UTF-8
 function parseContractor($db,$xml,$viid,$parsepoint){         
     if (parseHB($xml)){
         $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
@@ -8,8 +8,8 @@ function parseContractor($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-        if (count($substr)==0) //åñëè íå íàøëè òî÷êó âõîäà, ôîğìàò íå èçâåñòåí
-            throw new Exception('Îøèáêà: íå âåğíûé ôîğìàò ïîñòóïèâøåãî äîêóìåíòà, ñìîòğèòå ğåçóëüòàò âûïîëíåíèÿ.');        
+        if (count($substr)==0) //ĞµÑĞ»Ğ¸ Ğ½Ğµ Ğ½Ğ°ÑˆĞ»Ğ¸ Ñ‚Ğ¾Ñ‡ĞºÑƒ Ğ²Ñ…Ğ¾Ğ´Ğ°, Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚ Ğ½Ğµ Ğ¸Ğ·Ğ²ĞµÑÑ‚ĞµĞ½
+            throw new Exception('ĞÑˆĞ¸Ğ±ĞºĞ°: Ğ½Ğµ Ğ²ĞµÑ€Ğ½Ñ‹Ğ¹ Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚ Ğ¿Ğ¾ÑÑ‚ÑƒĞ¿Ğ¸Ğ²ÑˆĞµĞ³Ğ¾ Ğ´Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚Ğ°, ÑĞ¼Ğ¾Ñ‚Ñ€Ğ¸Ñ‚Ğµ Ñ€ĞµĞ·ÑƒĞ»ÑŒÑ‚Ğ°Ñ‚ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ.');        
         else{    
             foreach ($substr[0]->children($ns['dt']) as $out_ns){        
             $bstag=$out_ns->children($ns['bs']);

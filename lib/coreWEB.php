@@ -1,5 +1,5 @@
-<?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('Ïðÿìîé äîñòóï ê ñòðàíèöå çàïðåù¸í!');
-
+<?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('ÐŸÑ€ÑÐ¼Ð¾Ð¹ Ð´Ð¾ÑÑ‚ÑƒÐ¿ Ðº ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ðµ Ð·Ð°Ð¿Ñ€ÐµÑ‰Ñ‘Ð½!');
+//ÐšÐ¾Ð´Ð¸Ñ€Ð¾Ð²ÐºÐ° UTF-8
 class VetisAPI{
 
 var $wsdl;

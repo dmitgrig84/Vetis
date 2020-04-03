@@ -1,23 +1,23 @@
-<?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('Прямой доступ к странице запрещён!');
-
+<?php header('Content-Type: text/html; charset=windows-1251'); defined('MSD') OR die('РџСЂСЏРјРѕР№ РґРѕСЃС‚СѓРї Рє СЃС‚СЂР°РЅРёС†Рµ Р·Р°РїСЂРµС‰С‘РЅ!');
+//РљРѕРґРёСЂРѕРІРєР° UTF-8
 function msdXMLDetail($db,$xmlNode,$parentId,$xmlSchema,$sqlParams,$sqlResult,$rowResult){   
-    //$db -- подключение к БД
-    //$xmlNode -- собираемый XML текущий тег
-    //$parentId -- родитель ID записи из таблицы xmlschema
-    //$xmlSchema -- набор тегов таблицы xmlschama
-    //$sqlParams -- параметр по которому отбираюся записи
-    //$sqlResult -- набор записей запроса
-    //$rowResult -- номер текущей записи
+    //$db -- РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р‘Р”
+    //$xmlNode -- СЃРѕР±РёСЂР°РµРјС‹Р№ XML С‚РµРєСѓС‰РёР№ С‚РµРі
+    //$parentId -- СЂРѕРґРёС‚РµР»СЊ ID Р·Р°РїРёСЃРё РёР· С‚Р°Р±Р»РёС†С‹ xmlschema
+    //$xmlSchema -- РЅР°Р±РѕСЂ С‚РµРіРѕРІ С‚Р°Р±Р»РёС†С‹ xmlschama
+    //$sqlParams -- РїР°СЂР°РјРµС‚СЂ РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РѕС‚Р±РёСЂР°СЋСЃСЏ Р·Р°РїРёСЃРё
+    //$sqlResult -- РЅР°Р±РѕСЂ Р·Р°РїРёСЃРµР№ Р·Р°РїСЂРѕСЃР°
+    //$rowResult -- РЅРѕРјРµСЂ С‚РµРєСѓС‰РµР№ Р·Р°РїРёСЃРё
     $i=1;
     foreach ($xmlSchema as $arr) {
-        if (($arr["PARENTID"]<>$arr["ID"])&&($arr["PARENTID"]==$parentId)){//набор тегов таблицы xmlschama которые относятся к определенной ветке
-            if (is_null($arr['SEARCH'])) { //если у записи нет запроса
-                if (strpos($arr['CODE'],"v")){ //если это тег со значением
-                    if ($sqlResult[$rowResult][$i] <> ""){ //если не пусто(почему не проверил на is_null не знаю)
-                        $xmlNode->writeElement($arr['NAME'],iconv('cp1251', 'utf-8',$sqlResult[$rowResult][$i]));//добавляем к собираемому XML
+        if (($arr["PARENTID"]<>$arr["ID"])&&($arr["PARENTID"]==$parentId)){//РЅР°Р±РѕСЂ С‚РµРіРѕРІ С‚Р°Р±Р»РёС†С‹ xmlschama РєРѕС‚РѕСЂС‹Рµ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РѕРїСЂРµРґРµР»РµРЅРЅРѕР№ РІРµС‚РєРµ
+            if (is_null($arr['SEARCH'])) { //РµСЃР»Рё Сѓ Р·Р°РїРёСЃРё РЅРµС‚ Р·Р°РїСЂРѕСЃР°
+                if (strpos($arr['CODE'],"v")){ //РµСЃР»Рё СЌС‚Рѕ С‚РµРі СЃРѕ Р·РЅР°С‡РµРЅРёРµРј
+                    if ($sqlResult[$rowResult][$i] <> ""){ //РµСЃР»Рё РЅРµ РїСѓСЃС‚Рѕ(РїРѕС‡РµРјСѓ РЅРµ РїСЂРѕРІРµСЂРёР» РЅР° is_null РЅРµ Р·РЅР°СЋ)
+                        $xmlNode->writeElement($arr['NAME'],iconv('cp1251', 'utf-8',$sqlResult[$rowResult][$i]));//РґРѕР±Р°РІР»СЏРµРј Рє СЃРѕР±РёСЂР°РµРјРѕРјСѓ XML
                     }
                 } else{
-                    if (strpos($arr['CODE'],"a")){//если это тег с атрибутом
+                    if (strpos($arr['CODE'],"a")){//РµСЃР»Рё СЌС‚Рѕ С‚РµРі СЃ Р°С‚СЂРёР±СѓС‚РѕРј
                         $xmlNode->writeAttribute($arr['NAME'],$sqlResult[$rowResult][$i]);                                          
                     } else{
                         $xmlNode->startElement($arr['NAME']);                                                        
@@ -52,10 +52,10 @@ function msdXMLDetail($db,$xmlNode,$parentId,$xmlSchema,$sqlParams,$sqlResult,$r
     
          
 function msdXMLCreate($db,$parentId,$xmlSchema,$sqlParams){
-    //$db -- подключение к БД
-    //$parentId -- текущее значение корня
-    //$xmlSchema -- набор тегов таблицы xmlschama
-    //$sqlParams -- параметр по которому отбираюся записи
+    //$db -- РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р‘Р”
+    //$parentId -- С‚РµРєСѓС‰РµРµ Р·РЅР°С‡РµРЅРёРµ РєРѕСЂРЅСЏ
+    //$xmlSchema -- РЅР°Р±РѕСЂ С‚РµРіРѕРІ С‚Р°Р±Р»РёС†С‹ xmlschama
+    //$sqlParams -- РїР°СЂР°РјРµС‚СЂ РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РѕС‚Р±РёСЂР°СЋСЃСЏ Р·Р°РїРёСЃРё
     foreach ($xmlSchema as $arr) {
         if (($arr["ID"]==$arr["PARENTID"])&&($arr["PARENTID"]==$parentId)){            
             $xml=new XMLWriter();
@@ -103,29 +103,29 @@ function vetisSendXML($web,$db,$viid){
                     
                     require_once('vetisXMLparse.php');
                     if (parseXML($db,$result,$row['PARSETABLE'],$vetisidentifierid,$row['PARSEPOINT'],$parse_result)){
-                        array_push($return_result," Успешно: ".$resultstr." ".$parse_result);
+                        array_push($return_result," РЈСЃРїРµС€РЅРѕ: ".$resultstr." ".$parse_result);
                     }
                     else {
                         array_push($return_result,$parse_result);
                     }
                 } else{
-                    array_push($return_result," Ошибка: нет ответа от сервера.");                    
+                    array_push($return_result," РћС€РёР±РєР°: РЅРµС‚ РѕС‚РІРµС‚Р° РѕС‚ СЃРµСЂРІРµСЂР°.");                    
                 }
             }
             catch (Exception $fault) {
                 $up_sql_result="execute procedure vetis_processingresult($vetisidentifierid,:param,-1)";            
                 $faultMessage=iconv('utf-8','cp1251',$fault->getMessage());
                 $db->updateBlob($up_sql_result,$faultMessage);            
-                array_push($return_result,"Ошибка: $resultstr $faultMessage");
+                array_push($return_result,"РћС€РёР±РєР°: $resultstr $faultMessage");
             }
         }
         if (empty($return_result)){
-            array_push($return_result,"Нет не обработанных записей."); 
+            array_push($return_result,"РќРµС‚ РЅРµ РѕР±СЂР°Р±РѕС‚Р°РЅРЅС‹С… Р·Р°РїРёСЃРµР№."); 
         }                
     }
     catch (Exception $e) {    
         $eMessage=$e->getMessage();
-        array_push($return_result,"Ошибка: $eMessage");        
+        array_push($return_result,"РћС€РёР±РєР°: $eMessage");        
     }     
     return $return_result;
 }

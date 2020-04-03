@@ -1,5 +1,5 @@
-<?php  defined('MSD') OR die('Ïğÿìîé äîñòóï ê ñòğàíèöå çàïğåù¸í!');
-
+<?php  defined('MSD') OR die('ĞŸÑ€ÑĞ¼Ğ¾Ğ¹ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿ Ğº ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğµ Ğ·Ğ°Ğ¿Ñ€ĞµÑ‰Ñ‘Ğ½!');
+//ĞšĞ¾Ğ´Ğ¸Ñ€Ğ¾Ğ²ĞºĞ° UTF-8
 function parseVSD($db,$xml,$viid,$parsepoint){
     if (parseSAR($db,$xml,$viid)){        
         $xml->registerXPathNamespace('bs', 'http://api.vetrf.ru/schema/cdm/base');
@@ -10,9 +10,9 @@ function parseVSD($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
             
-        if ((count($substr)==0) || //åñëè íå íàøëè òî÷êó âõîäà, ôîğìàò íå èçâåñòåí
-            (($substr[0]->attributes()->count) && //åñëè åñòü àòğèáóò count
-             ((int)($substr[0]->attributes()->count)==0))) //îí ğàâåí 0 
+        if ((count($substr)==0) || //ĞµÑĞ»Ğ¸ Ğ½Ğµ Ğ½Ğ°ÑˆĞ»Ğ¸ Ñ‚Ğ¾Ñ‡ĞºÑƒ Ğ²Ñ…Ğ¾Ğ´Ğ°, Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚ Ğ½Ğµ Ğ¸Ğ·Ğ²ĞµÑÑ‚ĞµĞ½
+            (($substr[0]->attributes()->count) && //ĞµÑĞ»Ğ¸ ĞµÑÑ‚ÑŒ Ğ°Ñ‚Ñ€Ğ¸Ğ±ÑƒÑ‚ count
+             ((int)($substr[0]->attributes()->count)==0))) //Ğ¾Ğ½ Ñ€Ğ°Ğ²ĞµĞ½ 0 
             return 0;
         else
             foreach ($substr[0]->children($ns['vd']) as $out_ns){        

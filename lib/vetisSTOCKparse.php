@@ -1,5 +1,5 @@
-<?php defined('MSD') OR die('Ïðÿìîé äîñòóï ê ñòðàíèöå çàïðåù¸í!');
-
+<?php defined('MSD') OR die('ÐŸÑ€ÑÐ¼Ð¾Ð¹ Ð´Ð¾ÑÑ‚ÑƒÐ¿ Ðº ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ðµ Ð·Ð°Ð¿Ñ€ÐµÑ‰Ñ‘Ð½!');
+//ÐšÐ¾Ð´Ð¸Ñ€Ð¾Ð²ÐºÐ° UTF-8
 function saveStock($db,$tagStockEntry,$viid,$ns){
     $cmdstr="execute procedure vetis_stockresult(".$viid.",'";
     $cmdstr.=$tagStockEntry->children($ns['bs'])->uuid."','";
@@ -33,8 +33,8 @@ function parseStock($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-        if (count($substr)==0) //åñëè íå íàøëè òî÷êó âõîäà, ôîðìàò íå èçâåñòåí
-            throw new Exception('Îøèáêà: Íå âåðíûé ôîðìàò îòâåòà ÂÅÒÈÑ. Îáðàòèòåñü ê ðàçðàáîò÷èêó ìîäóëÿ.');            
+        if (count($substr)==0) //ÐµÑÐ»Ð¸ Ð½Ðµ Ð½Ð°ÑˆÐ»Ð¸ Ñ‚Ð¾Ñ‡ÐºÑƒ Ð²Ñ…Ð¾Ð´Ð°, Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ Ð½Ðµ Ð¸Ð·Ð²ÐµÑÑ‚ÐµÐ½
+            throw new Exception('ÐžÑˆÐ¸Ð±ÐºÐ°: ÐÐµ Ð²ÐµÑ€Ð½Ñ‹Ð¹ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ Ð¾Ñ‚Ð²ÐµÑ‚Ð° Ð’Ð•Ð¢Ð˜Ð¡. ÐžÐ±Ñ€Ð°Ñ‚Ð¸Ñ‚ÐµÑÑŒ Ðº Ñ€Ð°Ð·Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸ÐºÑƒ Ð¼Ð¾Ð´ÑƒÐ»Ñ.');            
         else{            
             foreach ($substr[0]->children($ns['merc']) as $tagEntry){
                 if ($tagEntry->getName()=='stockEntry')
@@ -57,9 +57,9 @@ function parseStockList($db,$xml,$viid,$parsepoint){
         $ns = $xml->getNamespaces(true);            
         $substr=$xml->xpath($parsepoint);
     
-        if ((count($substr)==0) || //åñëè íå íàøëè òî÷êó âõîäà, ôîðìàò íå èçâåñòåí
-            (($substr[0]->attributes()->count) && //åñëè åñòü àòðèáóò count
-             ((int)($substr[0]->attributes()->count)==0))) //îí ðàâåí 0 
+        if ((count($substr)==0) || //ÐµÑÐ»Ð¸ Ð½Ðµ Ð½Ð°ÑˆÐ»Ð¸ Ñ‚Ð¾Ñ‡ÐºÑƒ Ð²Ñ…Ð¾Ð´Ð°, Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ Ð½Ðµ Ð¸Ð·Ð²ÐµÑÑ‚ÐµÐ½
+            (($substr[0]->attributes()->count) && //ÐµÑÐ»Ð¸ ÐµÑÑ‚ÑŒ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚ count
+             ((int)($substr[0]->attributes()->count)==0))) //Ð¾Ð½ Ñ€Ð°Ð²ÐµÐ½ 0 
             return 0;       
         else{
             foreach ($substr[0]->children($ns['vd']) as $tagStockEntry)

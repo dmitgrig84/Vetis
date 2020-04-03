@@ -1,5 +1,5 @@
- <?php defined('MSD') OR die('Ïğÿìîé äîñòóï ê ñòğàíèöå çàïğåù¸í!');
- 
+ <?php defined('MSD') OR die('ĞŸÑ€ÑĞ¼Ğ¾Ğ¹ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿ Ğº ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğµ Ğ·Ğ°Ğ¿Ñ€ĞµÑ‰Ñ‘Ğ½!');
+//ĞšĞ¾Ğ´Ğ¸Ñ€Ğ¾Ğ²ĞºĞ° UTF-8 
 function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$parse_result){
     $countrow=0;
     try{
@@ -37,10 +37,10 @@ function parseXML($db,$XML,$parsetable,$viid,$parsepoint,&$parse_result){
                 $countrow=parseStockList($db,$XML,$viid,$parsepoint);        
                 break;                                            
             default :
-                throw new Exception('Íå çàäàíà òàáëèöà äëÿ ïàğñèíãà');        
+                throw new Exception('ĞĞµ Ğ·Ğ°Ğ´Ğ°Ğ½Ğ° Ñ‚Ğ°Ğ±Ğ»Ğ¸Ñ†Ğ° Ğ´Ğ»Ñ Ğ¿Ğ°Ñ€ÑĞ¸Ğ½Ğ³Ğ°');        
         }
         $db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);  
-        $parse_result=$parse_result." Îáğàáîòàíî: ".$countrow." çàïèñåé.";
+        $parse_result=$parse_result." ĞĞ±Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°Ğ½Ğ¾: ".$countrow." Ğ·Ğ°Ğ¿Ğ¸ÑĞµĞ¹.";
         return true;
     }   
     catch (Exception $e) {        
@@ -53,20 +53,20 @@ function parseSAR($db,$xml,$viid){
     $xml->registerXPathNamespace('apl', 'http://api.vetrf.ru/schema/cdm/application');
     $ns = $xml->getNamespaces(true);
     $substr=$xml->xpath('//apl:application');       
-    if (count($substr)==0) //åñëè íå íàøëè òî÷êó âõîäà, ôîğìàò íå èçâåñòåí
-        throw new Exception('Îøèáêà: Íå âåğíûé ôîğìàò îòâåòà ÂÅÒÈÑ. Îáğàòèòåñü ê ğàçğàáîò÷èêó ìîäóëÿ.');
+    if (count($substr)==0) //ĞµÑĞ»Ğ¸ Ğ½Ğµ Ğ½Ğ°ÑˆĞ»Ğ¸ Ñ‚Ğ¾Ñ‡ĞºÑƒ Ğ²Ñ…Ğ¾Ğ´Ğ°, Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚ Ğ½Ğµ Ğ¸Ğ·Ğ²ĞµÑÑ‚ĞµĞ½
+        throw new Exception('ĞÑˆĞ¸Ğ±ĞºĞ°: ĞĞµ Ğ²ĞµÑ€Ğ½Ñ‹Ğ¹ Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚ Ğ¾Ñ‚Ğ²ĞµÑ‚Ğ° Ğ’Ğ•Ğ¢Ğ˜Ğ¡. ĞĞ±Ñ€Ğ°Ñ‚Ğ¸Ñ‚ĞµÑÑŒ Ğº Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‡Ğ¸ĞºÑƒ Ğ¼Ğ¾Ğ´ÑƒĞ»Ñ.');
     else{
         //throw new Exception($substr[0]->children($ns['apl'])->status);        
         switch ($substr[0]->status){
             case 'IN_PROCESS':
-                throw new Exception('Çàïğîñ îáğàáàòûâàåòñÿ íà ñåğâåğå ÂÅÒÈÑ, çàïğîñèòå îòâåò ÷óòü ïîçæå.');        
+                throw new Exception('Ğ—Ğ°Ğ¿Ñ€Ğ¾Ñ Ğ¾Ğ±Ñ€Ğ°Ğ±Ğ°Ñ‚Ñ‹Ğ²Ğ°ĞµÑ‚ÑÑ Ğ½Ğ° ÑĞµÑ€Ğ²ĞµÑ€Ğµ Ğ’Ğ•Ğ¢Ğ˜Ğ¡, Ğ·Ğ°Ğ¿Ñ€Ğ¾ÑĞ¸Ñ‚Ğµ Ğ¾Ñ‚Ğ²ĞµÑ‚ Ñ‡ÑƒÑ‚ÑŒ Ğ¿Ğ¾Ğ·Ğ¶Ğµ.');        
             case 'REJECTED':
                 $vi_row=$db->selectWithParams("execute procedure vetis_viidresult(".$viid.")",null,null);                
-                throw new Exception("Îøèáêà: ".iconv('utf-8','cp1251',$substr[0]->children($ns['apl'])->errors->error));
+                throw new Exception("ĞÑˆĞ¸Ğ±ĞºĞ°: ".iconv('utf-8','cp1251',$substr[0]->children($ns['apl'])->errors->error));
             case 'COMPLETED':                
                 return true;
             default :
-                throw new Exception('Íå èçâåñòíûé ñòàòóñ îòâåòà ÂÅÒÈÑ.'); 
+                throw new Exception('ĞĞµ Ğ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ñ‹Ğ¹ ÑÑ‚Ğ°Ñ‚ÑƒÑ Ğ¾Ñ‚Ğ²ĞµÑ‚Ğ° Ğ’Ğ•Ğ¢Ğ˜Ğ¡.'); 
         }
     }
 }
@@ -76,7 +76,7 @@ function parseHB($xml){
     
     $ns = $xml->getNamespaces(true);
     $substr=$xml->xpath('//soapenv:Fault');       
-    if (count($substr)==0) //åñëè íå íàøëè òî÷êó âõîäà, çíà÷èò ıòî íå îøèáêà
+    if (count($substr)==0) //ĞµÑĞ»Ğ¸ Ğ½Ğµ Ğ½Ğ°ÑˆĞ»Ğ¸ Ñ‚Ğ¾Ñ‡ĞºÑƒ Ğ²Ñ…Ğ¾Ğ´Ğ°, Ğ·Ğ½Ğ°Ñ‡Ğ¸Ñ‚ ÑÑ‚Ğ¾ Ğ½Ğµ Ğ¾ÑˆĞ¸Ğ±ĞºĞ°
         return true;
     else{
         if ($substr[0]->detail){

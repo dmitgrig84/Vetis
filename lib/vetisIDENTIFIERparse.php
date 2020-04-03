@@ -1,12 +1,12 @@
-<?php  defined('MSD') OR die('Ïðÿìîé äîñòóï ê ñòðàíèöå çàïðåù¸í!');
-
+<?php  defined('MSD') OR die('ÐŸÑ€ÑÐ¼Ð¾Ð¹ Ð´Ð¾ÑÑ‚ÑƒÐ¿ Ðº ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ðµ Ð·Ð°Ð¿Ñ€ÐµÑ‰Ñ‘Ð½!');
+//ÐšÐ¾Ð´Ð¸Ñ€Ð¾Ð²ÐºÐ° UTF-8
 function parseIdentifier($db,$xml,$viid,$parsepoint){         
     $xml->registerXPathNamespace('ws', 'http://api.vetrf.ru/schema/cdm/application/ws-definitions');
     $ns = $xml->getNamespaces(true);            
     $substr=$xml->xpath($parsepoint);
     
-    if (count($substr)==0) //åñëè íå íàøëè òî÷êó âõîäà, ôîðìàò íå èçâåñòåí
-        throw new Exception('Îøèáêà: íå âåðíûé ôîðìàò ïîñòóïèâøåãî äîêóìåíòà, ñìîòðèòå ðåçóëüòàò âûïîëíåíèÿ.');
+    if (count($substr)==0) //ÐµÑÐ»Ð¸ Ð½Ðµ Ð½Ð°ÑˆÐ»Ð¸ Ñ‚Ð¾Ñ‡ÐºÑƒ Ð²Ñ…Ð¾Ð´Ð°, Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ Ð½Ðµ Ð¸Ð·Ð²ÐµÑÑ‚ÐµÐ½
+        throw new Exception('ÐžÑˆÐ¸Ð±ÐºÐ°: Ð½Ðµ Ð²ÐµÑ€Ð½Ñ‹Ð¹ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ Ð¿Ð¾ÑÑ‚ÑƒÐ¿Ð¸Ð²ÑˆÐµÐ³Ð¾ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð°, ÑÐ¼Ð¾Ñ‚Ñ€Ð¸Ñ‚Ðµ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ.');
     else{
         $cmdstr="execute procedure vetis_identifierresult(".$viid.",'";
         $cmdstr.=$substr[0]->application->applicationId."')";
